@@ -1,5 +1,5 @@
 
-# ByteBreaker Downloader
+# SegmenGetr Downloader
 
 <img src="https://github.com/user-attachments/assets/14436bc4-3c8d-41d1-8d9a-f618df0b6685" width="40%" style="display: block; margin-left: auto; margin-right: auto;">
 
