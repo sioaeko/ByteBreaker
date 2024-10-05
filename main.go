@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url" // net/url 패키지를 사용하기 위해 임포트
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -22,6 +22,8 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+
+	"go-downloader/lang" // 다국어 지원을 위해 lang 패키지 임포트
 )
 
 // 설정 구조체
@@ -47,7 +49,7 @@ func main() {
 	// 애플리케이션 생성 및 테마 설정
 	a := app.New()
 	a.Settings().SetTheme(theme.DarkTheme())
-	w := a.NewWindow("ByteBreaker Downloader")
+	w := a.NewWindow(lang.GetText("title"))
 
 	// 설정 로드
 	loadConfig()
@@ -63,7 +65,7 @@ func main() {
 
 	// 탭 생성
 	tabs := container.NewAppTabs(
-		container.NewTabItem("다운로드", downloadTab),
+		container.NewTabItem(lang.GetText("download"), downloadTab),
 		container.NewTabItem("다운로드 목록", downloadListTab),
 		container.NewTabItem("환경설정", settingsTab),
 	)
@@ -97,7 +99,7 @@ func loadConfig() {
 			MaxRetryCount:      3,
 			DownloadTimeout:    60,     // 60초
 			PostDownloadAction: "none", // 옵션: none, shutdown, open_file
-			CustomUserAgent:    "ByteBreakerDownloader/1.0",
+			CustomUserAgent:    "SegmenGetDownloader/1.0",
 		}
 		saveConfig()
 		return
@@ -109,19 +111,19 @@ func loadConfig() {
 // 다운로드 탭 생성 (중앙 정렬)
 func makeDownloadTab(w fyne.Window) *fyne.Container {
 	// 타이틀
-	title := canvas.NewText("⚡ ByteBreaker Downloader ⚡", theme.PrimaryColor())
+	title := canvas.NewText(lang.GetText("title"), theme.PrimaryColor())
 	title.TextSize = 30
 	title.TextStyle = fyne.TextStyle{Bold: true}
 	title.Alignment = fyne.TextAlignCenter
 
 	// URL 입력 필드
 	urlEntry := widget.NewEntry()
-	urlEntry.SetPlaceHolder("다운로드 URL 입력")
+	urlEntry.SetPlaceHolder(lang.GetText("urlPlaceholder"))
 
 	// 저장 경로 선택
 	savePathEntry := widget.NewEntry()
 	savePathEntry.SetText(config.DefaultSavePath) // 기본 저장 경로
-	savePathEntry.SetPlaceHolder("저장 경로")
+	savePathEntry.SetPlaceHolder(lang.GetText("savePath"))
 	browseBtn := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
 		dialog.ShowFolderOpen(func(uri fyne.ListableURI, err error) {
 			if err != nil {
@@ -152,19 +154,19 @@ func makeDownloadTab(w fyne.Window) *fyne.Container {
 	// 에이전트 수 입력
 	agentEntry := widget.NewEntry()
 	agentEntry.SetText(fmt.Sprintf("%d", config.DefaultAgentNum)) // 기본 에이전트 수
-	agentEntry.SetPlaceHolder("에이전트 수 입력")
+	agentEntry.SetPlaceHolder(lang.GetText("agentNum"))
 
 	// 진행 상황 표시
 	progress := widget.NewProgressBar()
 	progress.Hide()
 
 	// 상태 및 속도 표시
-	status := widget.NewLabelWithStyle("대기 중...", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
+	status := widget.NewLabelWithStyle(lang.GetText("statusWaiting"), fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 	speedLabel := widget.NewLabelWithStyle("속도: 0 KB/s", fyne.TextAlignLeading, fyne.TextStyle{})
 
 	// 다운로드 버튼
 	var downloadBtn *widget.Button
-	downloadBtn = widget.NewButtonWithIcon("다운로드", theme.DownloadIcon(), func() {
+	downloadBtn = widget.NewButtonWithIcon(lang.GetText("download"), theme.DownloadIcon(), func() {
 		downloadURL := urlEntry.Text
 		savePath := savePathEntry.Text
 		agents, err := strconv.Atoi(agentEntry.Text) // 에이전트 수를 입력받음
@@ -188,7 +190,7 @@ func makeDownloadTab(w fyne.Window) *fyne.Container {
 		outputFile := filepath.Join(savePath, filename)
 
 		progress.Show()
-		status.SetText("다운로드 중...")
+		status.SetText(lang.GetText("statusDownloading"))
 		downloadBtn.Disable()
 
 		go func() {
@@ -199,8 +201,8 @@ func makeDownloadTab(w fyne.Window) *fyne.Container {
 			} else {
 				// 다운로드 성공 시 목록에 추가
 				downloadHistory = append(downloadHistory, outputFile)
-				dialog.ShowInformation("완료", "다운로드가 완료되었습니다", w)
-				status.SetText("다운로드 완료")
+				dialog.ShowInformation("완료", lang.GetText("statusCompleted"), w)
+				status.SetText(lang.GetText("statusCompleted"))
 			}
 			progress.Hide()
 			downloadBtn.Enable()
@@ -211,14 +213,14 @@ func makeDownloadTab(w fyne.Window) *fyne.Container {
 	content := container.NewVBox(
 		title,
 		widget.NewSeparator(),
-		widget.NewLabelWithStyle("📡 다운로드 URL:", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle("📡 "+lang.GetText("urlPlaceholder")+":", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		urlEntry,
-		widget.NewLabelWithStyle("📁 저장 경로:", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle("📁 "+lang.GetText("savePath")+":", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		container.NewBorder(nil, nil, nil, browseBtn, savePathEntry),
 		customFilenameCheck,
 		customFilenameEntry,
 		container.NewGridWithColumns(2,
-			widget.NewLabelWithStyle("에이전트 수:", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+			widget.NewLabelWithStyle(lang.GetText("agentNum")+":", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 			agentEntry,
 		),
 		progress,
@@ -261,7 +263,7 @@ func makeSettingsTab(w fyne.Window) *fyne.Container {
 	// 기본 저장 경로 설정
 	savePathEntry := widget.NewEntry()
 	savePathEntry.SetText(config.DefaultSavePath)
-	savePathEntry.SetPlaceHolder("기본 저장 경로")
+	savePathEntry.SetPlaceHolder(lang.GetText("savePath"))
 	browseBtn := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
 		dialog.ShowFolderOpen(func(uri fyne.ListableURI, err error) {
 			if err != nil {
@@ -278,7 +280,7 @@ func makeSettingsTab(w fyne.Window) *fyne.Container {
 	// 기본 에이전트 수 설정
 	agentEntry := widget.NewEntry()
 	agentEntry.SetText(fmt.Sprintf("%d", config.DefaultAgentNum))
-	agentEntry.SetPlaceHolder("기본 에이전트 수")
+	agentEntry.SetPlaceHolder(lang.GetText("agentNum"))
 
 	// 최대 다운로드 속도 설정 (KB/s)
 	speedEntry := widget.NewEntry()
@@ -311,6 +313,22 @@ func makeSettingsTab(w fyne.Window) *fyne.Container {
 	userAgentEntry.SetText(config.CustomUserAgent)
 	userAgentEntry.SetPlaceHolder("사용자 정의 User-Agent")
 
+	// 언어 설정 추가
+	langSelect := widget.NewSelect([]string{"English", "Korean", "Japanese", "Chinese"}, func(selected string) {
+		switch selected {
+		case "English":
+			lang.SetLanguage(lang.English)
+		case "Korean":
+			lang.SetLanguage(lang.Korean)
+		case "Japanese":
+			lang.SetLanguage(lang.Japanese)
+		case "Chinese":
+			lang.SetLanguage(lang.Chinese)
+		}
+		updateLanguageUI(w)
+	})
+	langSelect.SetSelected("English")
+
 	// 설정 저장 버튼
 	saveBtn := widget.NewButton("저장", func() {
 		config.DefaultSavePath = savePathEntry.Text
@@ -339,9 +357,9 @@ func makeSettingsTab(w fyne.Window) *fyne.Container {
 	// 레이아웃 구성
 	content := container.NewVBox(
 		widget.NewLabelWithStyle("설정", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
-		widget.NewLabelWithStyle("📁 기본 저장 경로", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle("📁 "+lang.GetText("savePath"), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		container.NewBorder(nil, nil, nil, browseBtn, savePathEntry),
-		widget.NewLabelWithStyle("🔧 기본 에이전트 수", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle("🔧 "+lang.GetText("agentNum"), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		agentEntry,
 		widget.NewLabelWithStyle("🚀 최대 다운로드 속도 (KB/s)", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		speedEntry,
@@ -355,6 +373,8 @@ func makeSettingsTab(w fyne.Window) *fyne.Container {
 		actionSelect,
 		widget.NewLabelWithStyle("사용자 정의 User-Agent", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		userAgentEntry,
+		widget.NewLabelWithStyle("언어 설정", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		langSelect,
 		layout.NewSpacer(),
 		saveBtn,
 	)
@@ -365,7 +385,7 @@ func makeSettingsTab(w fyne.Window) *fyne.Container {
 
 // URL에서 파일명 추출
 func getFilenameFromURL(rawURL string) string {
-	parsedURL, err := url.Parse(rawURL) // net/url 패키지의 Parse 함수 사용
+	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
 		return ""
 	}
@@ -462,10 +482,8 @@ func downloadFile(downloadURL, outputFile string, agents int, progress *widget.P
 	// 다운로드 후 액션 처리
 	switch config.PostDownloadAction {
 	case "shutdown":
-		// 시스템 종료 명령을 실행 (여기선 단순히 로그 출력)
 		fmt.Println("다운로드 완료 후 시스템을 종료합니다.")
 	case "open_file":
-		// 파일 열기
 		fmt.Printf("다운로드한 파일을 엽니다: %s\n", outputFile)
 	}
 
@@ -522,4 +540,9 @@ func mergeParts(outputFile, tempDir string, agents int) error {
 	}
 
 	return nil
+}
+
+// 언어 변경 시 UI 업데이트
+func updateLanguageUI(w fyne.Window) {
+	w.SetTitle(lang.GetText("title"))
 }
