@@ -29,13 +29,13 @@ ByteBreaker Downloader는 Go로 작성되었기 때문에 Go가 필요합니다.
 1. 터미널을 열고, 프로젝트를 클론합니다:
 
 ```bash
-git clone https://github.com/username/bytebreaker-downloader.git
+git clone https://github.com/sioaeko/ByteBreaker.git
 ```
 
 2. 프로젝트 폴더로 이동합니다:
 
 ```bash
-cd bytebreaker-downloader
+cd ByteBreaker
 ```
 
 3. 종속성 설치 (Fyne 프레임워크 포함):
