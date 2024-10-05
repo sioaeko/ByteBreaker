@@ -1,7 +1,10 @@
 
 # ByteBreaker Downloader
 
-<img src="https://github.com/user-attachments/assets/14436bc4-3c8d-41d1-8d9a-f618df0b6685" width="40%"></img>
+<div style="text-align: center;">
+    <img src="https://github.com/user-attachments/assets/14436bc4-3c8d-41d1-8d9a-f618df0b6685" width="40%">
+</div>
+
 
 ByteBreaker Downloader는 사용자가 원하는 URL에서 파일을 빠르고 효율적으로 다운로드할 수 있도록 돕는 고급 다운로드 관리 애플리케이션입니다. Go와 [Fyne](https://fyne.io/) 프레임워크를 사용하여 개발되었으며, 여러 파일 분할 다운로드, 프록시 설정, 다운로드 속도 제한 등의 기능을 제공합니다.
 
