@@ -1,11 +1,11 @@
 
-# SegmenGetr Downloader
+# SegmenGet Downloader
 
 <img src="https://github.com/user-attachments/assets/14436bc4-3c8d-41d1-8d9a-f618df0b6685" width="40%" style="display: block; margin-left: auto; margin-right: auto;">
 
 
 
-ByteBreaker Downloader는 사용자가 원하는 URL에서 파일을 빠르고 효율적으로 다운로드할 수 있도록 돕는 고급 다운로드 관리 애플리케이션입니다. Go와 [Fyne](https://fyne.io/) 프레임워크를 사용하여 개발되었으며, 여러 파일 분할 다운로드, 프록시 설정, 다운로드 속도 제한 등의 기능을 제공합니다.
+SegmenGet Downloader는 사용자가 원하는 URL에서 파일을 빠르고 효율적으로 다운로드할 수 있도록 돕는 고급 다운로드 관리 애플리케이션입니다. Go와 [Fyne](https://fyne.io/) 프레임워크를 사용하여 개발되었으며, 여러 파일 분할 다운로드, 프록시 설정, 다운로드 속도 제한 등의 기능을 제공합니다.
 
 ## 기능
 
@@ -29,13 +29,13 @@ ByteBreaker Downloader는 Go로 작성되었기 때문에 Go가 필요합니다.
 1. 터미널을 열고, 프로젝트를 클론합니다:
 
 ```bash
-git clone https://github.com/sioaeko/ByteBreaker.git
+git clone https://github.com/sioaeko/SegmenGet.git
 ```
 
 2. 프로젝트 폴더로 이동합니다:
 
 ```bash
-cd ByteBreaker
+cd SegmenGet
 ```
 
 3. 종속성 설치 (Fyne 프레임워크 포함):
@@ -47,18 +47,18 @@ go mod tidy
 4. 프로그램 빌드:
 
 ```bash
-go build -o bytebreaker
+go build -o SegmenGet
 ```
 
 5. 실행:
 
 ```bash
-./bytebreaker
+./SegmenGet
 ```
 
 ## 사용 방법
 
-ByteBreaker Downloader는 직관적인 사용자 인터페이스를 제공하여 쉽게 다운로드를 관리할 수 있습니다. 아래는 간단한 사용 방법입니다.
+SegmenGet Downloader는 직관적인 사용자 인터페이스를 제공하여 쉽게 다운로드를 관리할 수 있습니다. 아래는 간단한 사용 방법입니다.
 
 ### 1. **다운로드 URL 입력**
    애플리케이션 상단의 "📡 다운로드 URL" 필드에 다운로드할 파일의 URL을 입력합니다.
@@ -80,7 +80,7 @@ ByteBreaker Downloader는 직관적인 사용자 인터페이스를 제공하여
 
 ## 설정
 
-ByteBreaker Downloader는 다양한 설정을 지원하여 사용자 맞춤형 환경을 제공합니다.
+SegmenGet Downloader는 다양한 설정을 지원하여 사용자 맞춤형 환경을 제공합니다.
 
 1. **기본 저장 경로**: 기본적으로 다운로드된 파일을 저장할 경로.
 2. **기본 에이전트 수**: 다운로드할 때 기본적으로 사용할 에이전트 수.
